@@ -1,56 +1,35 @@
 import re
+import json
 
-#1
-p = r"ab*"
-s = input("Enter a string: ")
-if re.fullmatch(p, s):
-    print("Match")
-else:
-    print("No match")
+with open("raw.txt", "r", encoding="utf-8") as f:
+    data = f.read()
 
-#2
-p = r"ab{2,3}"
-s = input("Enter a string: ")
-if re.fullmatch(p, s):
-    print("Match")
-else:
-    print("No match")
+result = {
+    "date": None,
+    "time": None,
+    "payment_method": None,
+    "products": [],
+    "all_prices": [],
+    "calculated_total": 0.0
+}
 
-#3
-s = input("Enter a string: ")
-p = r"\b[a-z]+(?:_[a-z]+)+\b"
-matches = re.findall(p, s)
-print(matches)
+dt_match = re.search(r"(\d{2}\.\d{2}\.\d{4})\s+(\d{2}:\d{2}:\d{2})", data)
+if dt_match:
+    result["date"] = dt_match.group(1)
+    result["time"] = dt_match.group(2)
 
-#4
-s = input()
-p = r"\b[A-Z][a-z]+\b"
-print(re.findall(p, s))
+pay_match = re.search(r"([А-Яа-я ]+):\n[\d\s,]+\nИТОГО", data)
+if pay_match:
+    result["payment_method"] = pay_match.group(1).strip()
 
-#5
-s = input()
-pattern = r"a.*b"
-print("Match" if re.fullmatch(pattern, s) else "No match")
+product_pattern = r"\d+\.\n(.*?)\n.*?\n([\d\s,]+)\nСтоимость"
+items_found = re.findall(product_pattern, data, re.DOTALL)
 
-#6
-s = input()
-print(re.sub(r"[ ,\.]", ":", s))
+for item in items_found:
+    name = item[0].strip().replace('\n', ' ')
+    price_str = item[1].strip().replace(" ", "").replace(",", ".")
+    price = float(price_str)
 
-#7
-s = input().strip()
-parts = re.split(r"_+", s)
-camel = parts[0] + "".join(p.capitalize() for p in parts[1:] if p)
-print(camel)
+result["calculated_total"] = sum(result["all_prices"])
 
-#8
-s = input().strip()
-print(re.findall(r"[A-Z]?[a-z]+|[A-Z]+(?![a-z])", s))
-
-#9
-s = input().strip()
-print(re.sub(r"(?<!^)(?=[A-Z])", " ", s))
-
-#10
-s = input().strip()
-snake = re.sub(r"(?<!^)(?=[A-Z])", "_", s).lower()
-print(snake)
+print(json.dumps(result, indent=4, ensure_ascii=False))
