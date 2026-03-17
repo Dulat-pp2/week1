@@ -1,25 +1,22 @@
 #1
-n = int(input())
-
-def squares(n):
+def sq(n):
     for i in range(1, n + 1):
-        yield i * i
+        yield i ** 2
 
-for x in squares(n):
-    print(x)
+for i in sq(int(input())):
+    print(i)
 
 #2
-n = int(input())
-
-def evens(n):
-    for i in range(0, n + 1, 2):
-        yield i
+def even(n):
+    for i in range(n + 1):
+        if i % 2 == 0:
+            yield i
 
 first = True
-for x in evens(n):
+for i in even(int(input())):
     if not first:
-        print(",", end="")
-    print(x, end="")
+        print(',', end = "")
+    print(i, end = "")
     first = False
 
 #3
