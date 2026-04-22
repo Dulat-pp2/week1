@@ -2,14 +2,9 @@ import pygame
 import random
 import sys
 
-# ─────────────────────────────────────────────
-#  Инициализация Pygame
-# ─────────────────────────────────────────────
 pygame.init()
 
-# ─────────────────────────────────────────────
 #  Константы
-# ─────────────────────────────────────────────
 CELL        = 20          # размер одной клетки в пикселях
 COLS        = 25          # количество колонок
 ROWS        = 25          # количество строк
@@ -43,9 +38,7 @@ TEXT_COLOR  = (200, 210, 230)
 GOLD        = (255, 210,   0)
 LEVEL_COLOR = (100, 200, 255)
 
-# ─────────────────────────────────────────────
 #  Создание окна
-# ─────────────────────────────────────────────
 screen = pygame.display.set_mode((SCREEN_W, SCREEN_H))
 pygame.display.set_caption("Snake 🐍")
 clock  = pygame.time.Clock()
@@ -56,9 +49,7 @@ font_med    = pygame.font.SysFont("Arial", 26, bold=True)
 font_small  = pygame.font.SysFont("Arial", 18)
 
 
-# ══════════════════════════════════════════════
 #  ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
-# ══════════════════════════════════════════════
 
 def cell_rect(col, row):
     """Возвращает pygame.Rect для клетки (col, row) с учётом панели сверху."""
@@ -181,12 +172,10 @@ def generate_walls(level):
     return walls
 
 
-# ══════════════════════════════════════════════
 #  ОСНОВНОЙ ИГРОВОЙ ЦИКЛ
-# ══════════════════════════════════════════════
 
 def game_loop():
-    # ── Начальное состояние ──────────────────
+    # Начальное состояние
     level        = 1
     score        = 0
     food_eaten   = 0          # всего съедено (для уровней)
@@ -209,7 +198,7 @@ def game_loop():
     while True:
         clock.tick(current_fps)
 
-        # ── Обработка событий ────────────────
+        # Обработка событий
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 pygame.quit()
@@ -230,7 +219,7 @@ def game_loop():
                 if event.key == pygame.K_LEFT  and direction != (1,  0): next_dir = (-1, 0)
                 if event.key == pygame.K_RIGHT and direction != (-1, 0): next_dir = (1,  0)
 
-        # ── Стартовый экран ──────────────────
+        # Стартовый экран
         if not started:
             draw_grid(screen)
             draw_hud(screen, score, level, food_eaten, FOOD_PER_LVL, current_fps)
@@ -239,7 +228,7 @@ def game_loop():
             pygame.display.flip()
             continue
 
-        # ── Экран Game Over ──────────────────
+        # Экран Game Over
         if game_over:
             draw_grid(screen)
             for w in walls:
@@ -255,7 +244,7 @@ def game_loop():
             pygame.display.flip()
             continue
 
-        # ── Движение змеи ────────────────────
+        # Движение змеи
         direction  = next_dir
         head_c, head_r = snake[0]
         new_head   = (head_c + direction[0], head_r + direction[1])
@@ -281,7 +270,7 @@ def game_loop():
             score       += 10 * level
             food_eaten  += 1
 
-            # ── Повышение уровня ─────────────
+            # Повышение уровня
             if food_eaten % FOOD_PER_LVL == 0:
                 level        += 1
                 current_fps   = FPS_START + (level - 1) * FPS_STEP
@@ -298,7 +287,7 @@ def game_loop():
         if level_up_msg > 0:
             level_up_msg -= 1
 
-        # ── Отрисовка ────────────────────────
+        # Отрисовка
         draw_grid(screen)
 
         # Стены
@@ -326,8 +315,6 @@ def game_loop():
         pygame.display.flip()
 
 
-# ─────────────────────────────────────────────
 #  Точка входа
-# ─────────────────────────────────────────────
 if __name__ == "__main__":
     game_loop()

@@ -1,14 +1,10 @@
 import pygame
 import sys
 
-# ─────────────────────────────────────────────
 #  Инициализация Pygame
-# ─────────────────────────────────────────────
 pygame.init()
 
-# ─────────────────────────────────────────────
 #  Константы
-# ─────────────────────────────────────────────
 SCREEN_W    = 900
 SCREEN_H    = 650
 TOOLBAR_W   = 160          # ширина левой панели инструментов
@@ -37,9 +33,8 @@ PALETTE = [
     (180,   0, 180),  (100,   0, 120),  (255, 150, 200),  (150,  80,  40),
 ]
 
-# ─────────────────────────────────────────────
 #  Создание окна
-# ─────────────────────────────────────────────
+
 screen = pygame.display.set_mode((SCREEN_W, SCREEN_H))
 pygame.display.set_caption("Paint 🎨")
 clock  = pygame.time.Clock()
@@ -48,17 +43,13 @@ clock  = pygame.time.Clock()
 font_tool  = pygame.font.SysFont("Arial", 16, bold=True)
 font_label = pygame.font.SysFont("Arial", 13)
 
-# ─────────────────────────────────────────────
 #  Отдельная поверхность для холста
 #  (чтобы превью фигуры не затирало нарисованное)
-# ─────────────────────────────────────────────
 canvas = pygame.Surface((CANVAS_W, CANVAS_H))
 canvas.fill(BG_CANVAS)
 
 
-# ══════════════════════════════════════════════
 #  ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ
-# ══════════════════════════════════════════════
 
 def canvas_pos(mx, my):
     """Переводит экранные координаты мыши в координаты холста."""
@@ -75,14 +66,14 @@ def draw_toolbar(surface, active_tool, draw_color, brush_size):
 
     y = 12
 
-    # ── Заголовок ────────────────────────────
+    # Заголовок
     title = font_tool.render("🎨  Paint", True, HIGHLIGHT)
     surface.blit(title, (10, y))
     y += 30
     pygame.draw.line(surface, DIVIDER, (8, y), (TOOLBAR_W - 8, y))
     y += 10
 
-    # ── Кнопки инструментов ──────────────────
+    # Кнопки инструментов
     icons = {"Pencil": "✏", "Line": "╱", "Rectangle": "▭",
              "Circle": "○", "Eraser": "⌫"}
 
@@ -103,7 +94,7 @@ def draw_toolbar(surface, active_tool, draw_color, brush_size):
     pygame.draw.line(surface, DIVIDER, (8, y), (TOOLBAR_W - 8, y))
     y += 10
 
-    # ── Размер кисти ─────────────────────────
+    # Размер кисти
     sz_label = font_label.render(f"Size: {brush_size}px", True, TEXT_COLOR)
     surface.blit(sz_label, (10, y))
     y += 20
@@ -122,7 +113,7 @@ def draw_toolbar(surface, active_tool, draw_color, brush_size):
     pygame.draw.line(surface, DIVIDER, (8, y), (TOOLBAR_W - 8, y))
     y += 10
 
-    # ── Палитра цветов ───────────────────────
+    # Палитра цветов
     pal_label = font_label.render("Colors:", True, TEXT_COLOR)
     surface.blit(pal_label, (10, y))
     y += 18
@@ -144,14 +135,14 @@ def draw_toolbar(surface, active_tool, draw_color, brush_size):
     pygame.draw.line(surface, DIVIDER, (8, y), (TOOLBAR_W - 8, y))
     y += 10
 
-    # ── Текущий цвет ─────────────────────────
+    # Текущий цвет
     cur_label = font_label.render("Current:", True, TEXT_COLOR)
     surface.blit(cur_label, (10, y))
     y += 18
     pygame.draw.rect(surface, draw_color,       (10, y, 50, 26), border_radius=5)
     pygame.draw.rect(surface, (200, 200, 200),  (10, y, 50, 26), 2, border_radius=5)
 
-    # ── Подсказка очистить ───────────────────
+    # Подсказка очистить
     clr = font_label.render("[ C ] Clear", True, (160, 100, 100))
     surface.blit(clr, (10, SCREEN_H - 24))
 
@@ -235,9 +226,7 @@ def commit_shape(canvas_surf, tool, start, end, color, size):
             pygame.draw.ellipse(canvas_surf, color, r, size)
 
 
-# ══════════════════════════════════════════════
 #  ГЛАВНЫЙ ЦИКЛ
-# ══════════════════════════════════════════════
 
 def main():
     active_tool  = "Pencil"
@@ -258,7 +247,7 @@ def main():
                 pygame.quit()
                 sys.exit()
 
-            # ── Клавиатура ───────────────────
+            # Клавиатура
             if event.type == pygame.KEYDOWN:
                 # Размер кисти
                 if event.key == pygame.K_EQUALS or event.key == pygame.K_PLUS:
@@ -273,7 +262,7 @@ def main():
                     if event.key == getattr(pygame, f"K_{i}"):
                         active_tool = t
 
-            # ── Нажатие мыши ─────────────────
+            # Нажатие мыши
             if event.type == pygame.MOUSEBUTTONDOWN and event.button == 1:
                 # Клик по панели инструментов
                 if mx < TOOLBAR_W:
@@ -290,7 +279,7 @@ def main():
                     start_pos = (cx, cy)
                     prev_pos  = (cx, cy)
 
-            # ── Отпускание мыши ──────────────
+            # Отпускание мыши
             if event.type == pygame.MOUSEBUTTONUP and event.button == 1:
                 if drawing and start_pos is not None:
                     cx, cy  = canvas_pos(mx, my)
@@ -305,7 +294,7 @@ def main():
                 start_pos = None
                 prev_pos  = None
 
-            # ── Движение мыши с зажатой кнопкой ──
+            # Движение мыши с зажатой кнопкой
             if event.type == pygame.MOUSEMOTION and drawing:
                 cx, cy = canvas_pos(mx, my)
 
@@ -321,7 +310,7 @@ def main():
                     pygame.draw.circle(canvas, BG_CANVAS,
                                        (cx, cy), ERASER_SIZE)
 
-        # ── Отрисовка кадра ──────────────────
+        # Отрисовка кадра
 
         # Копируем холст на экран (со смещением)
         screen.blit(canvas, (CANVAS_X, 0))
@@ -345,8 +334,6 @@ def main():
         pygame.display.flip()
 
 
-# ─────────────────────────────────────────────
 #  Точка входа
-# ─────────────────────────────────────────────
 if __name__ == "__main__":
     main()
