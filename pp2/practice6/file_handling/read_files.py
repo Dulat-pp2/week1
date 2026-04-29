@@ -1,4 +1,3 @@
-# Preparation: create test file
 with open("test.txt", "w") as f:
     f.write("apple\nbanana\ncherry\norange\ngrape")
 
